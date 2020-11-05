@@ -10,9 +10,9 @@ namespace Cross_O
     {
         static void Main(string[] args)
         {
-            CrossGame();
-            ContinueOrExitGame();
-            Console.Clear();
+            CrossGame();           //Start of the Game. The program is designed for two real people and doesn't offer to play with Machine
+            ContinueOrExitGame();  //Program offers to play again or exit the game
+            Console.Clear(); 
         }
 
         static void CrossGame()
@@ -39,17 +39,20 @@ namespace Cross_O
                 {"C","|", " ","|", " ","|", " "},
             };
 
-            Introduce(ref player1, ref player2); //Предлагает игрокам ввести имена или оставить дефолтные. Есть проверка на ввод Да/Нет
+            Introduce(ref player1, ref player2); //Offers players to type their names 
+                                                 //or to leave default ones, you can chose by pressing Y/N
             Console.Clear();
             while(count <= 9)
             {
-                BoardDisplay(board);  //Отображения поля на данный момент
+                BoardDisplay(board);  //Displays the Field at the moment
                 Console.WriteLine();
                 count++;
-                AskAndPut(board, count, ref countX, ref countO, player1, player2, Xaxis, ref Yaxis, ref Xc, ref Yc); //Ввод координат игроками по очереди
+                //Players take turn in entering coordinates. Choice will be displayed on the Field, Console will be cleared each time
+                AskAndPut(board, count, ref countX, ref countO, player1, player2, Xaxis, ref Yaxis, ref Xc, ref Yc); 
                 Console.Clear();
 
-                //Проверка на выигрышные комбинации
+                //After at least one of the players will make 3 moves, the program will start to check the field on winner combinatons
+                //If there will be a combination, the game will be stoped, and the name of the winner will be displayed
                 if(countX >= 3 || countO >= 3)
                 {
                     VictoryConditions(board, ref winner, countX, countO);
@@ -88,7 +91,7 @@ namespace Cross_O
             }
         }
         static void BoardDisplay(string[,] board)
-        {
+        {//Displaying the board at the real game moment
             int height = board.GetLength(0);
             int width = board.GetLength(1);
             for (int y = 0; y < height; y++)
@@ -102,8 +105,7 @@ namespace Cross_O
         }
         static void Introduce(ref string player1, ref string player2)
         {
-            //Предлагает игрокам ввести имена. Есть проверка на введение либо Y, либо N
-            //Если игроки соглашаются ввести имя, записывает имена в переменные Player. Иначе перемю просто Player 1/2 
+            //Offers players to type their names or to leave default ones, you can chose by pressing Y/N
             Console.WriteLine("Do you want to enter a name for 1st player? Y/N");
             string answer = Console.ReadLine();
             answer = answer.ToUpper();
@@ -156,7 +158,10 @@ namespace Cross_O
         static void AskAndPut(string[,] board, int count, ref int countX, ref int countO, string player1, string player2, string Xaxis, 
             ref string Yaxis, ref int Xc, ref int Yc)
         {
-            if (count % 2 == 0)
+            //Asking for coordinates. The program checks if the square is occupied. If it is, the program will offer to enter another 
+            //coordinates. If its free, the program accepts the choice
+            //Also, each player has their own counter to calculate moves
+            if (count % 2 == 0)  //determine whose turn to play
             {
                 while (true)
                 {
@@ -213,6 +218,8 @@ namespace Cross_O
         }
         static void YCheck(ref string Yaxis)
         {
+            //Checking that Y coordinate is acceptible. If player puts anything but required, 
+            //the program asks for coordinate until recieves the proper answer  
                 while (Yaxis != "A" & Yaxis != "B" & Yaxis != "C")
                 {
                     Console.WriteLine("Invalid answer! Must be a, b or c. Enter again:");
@@ -221,7 +228,7 @@ namespace Cross_O
                 }
         }
         static int Ycoordinate(string Yaxis, ref int Yc)
-        {
+        {//Determining Y coordinates according to positions on the field
             switch (Yaxis)
             {
                 case "A":
@@ -237,7 +244,8 @@ namespace Cross_O
             return Yc;
         }
         static void XCheck(ref string Xaxis)
-        {
+        {//Checking that X coordinate is acceptible. If player puts anything but required, 
+         //the program asks for coordinate until recieves the proper answer  
             while (Xaxis != "1" && Xaxis != "2" && Xaxis != "3")
             {
                 Console.WriteLine("Invalid answer for coordinate X! Must be 1, 2 or 3. Enter again:");
@@ -245,7 +253,9 @@ namespace Cross_O
             }
         }
         static void VictoryConditions(string[,] board, ref int winner, int countX, int countO)
-        {
+        {   //Comparing existing positions with victory combinations, taking into account personal player's counters to determine
+            //whose combination is winning
+            //(Probably the bulkiest version of Victory Combinations, but I couldn't create anything more simple and elegant...)
             if(board[2, 2] == "X" && board[2,2] == board[2,4] && board[2, 4] == board[2,6] && countX >= 3)
             {
                 winner = 1;
@@ -317,6 +327,7 @@ namespace Cross_O
         }
         static void ContinueOrExitGame()
         {
+            //Offers to play again or to exit the program
             string answer = null;
                 do
                 {
